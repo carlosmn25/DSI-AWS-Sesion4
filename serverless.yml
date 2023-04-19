@@ -31,6 +31,8 @@ functions:
     handler: functions/train.handle
     layers:
       - {Ref: RequirementsLambdaLayer}
+    events:
+      - sns: ${self:service}-train-knn-${sls:stage}
 
   knn-classify:
     handler: functions/classify.handle
