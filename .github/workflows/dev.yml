@@ -3,7 +3,7 @@ name: DSI-AWS-Sesion4-actions
 on:
   push:
     branches:
-    - main
+    - develop
   
   workflow_dispatch:
 
@@ -33,7 +33,7 @@ jobs:
           aws-region: us-east-1
           
       - name: Deploy
-        run: serverless deploy --stage prod
+        run: serverless deploy --stage dev
         
         
         
