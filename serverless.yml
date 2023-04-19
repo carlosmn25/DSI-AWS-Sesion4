@@ -6,7 +6,7 @@ package:
     - 'functions/*'
 
 custom:
-  bucket_name: ${self:service}-data-${sls:stage} ...
+  bucket_name: ${self:service}-data-${sls:stage}.cmedrano
   
 provider:
   name: aws
