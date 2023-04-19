@@ -1,0 +1,47 @@
+service: muii-ml-devops
+
+package:
+  patterns:
+    - '!**'
+    - 'functions/*'
+
+custom:
+  bucket_name: ${self:service}-data-${sls:stage} ...
+  
+provider:
+  name: aws
+  runtime: python3.9
+  deploymentMethod: direct
+  iam:
+    role: arn:aws:iam::${aws:accountId}:role/LabRole
+  environment:
+    BUCKET_NAME: ${self:custom.bucket_name}
+
+layers:
+  requirements:
+    package:
+      artifact: python-requirements.zip
+    name: ${self:service}-requirements-layer-${sls:stage}
+    description: Python requirements
+    compatibleRuntimes:
+      - python3.9
+
+functions:
+  knn-train:
+    handler: functions/train.handle
+    layers:
+      - {Ref: RequirementsLambdaLayer}
+
+  knn-classify:
+    handler: functions/classify.handle
+    layers:
+      - {Ref: RequirementsLambdaLayer}
+    events:
+      - httpApi: GET /classify/{id}
+
+resources:
+  Resources:
+    DataS3Bucket:
+      Type: 'AWS::S3::Bucket'
+      Properties:
+        BucketName: ${self:custom.bucket_name}
